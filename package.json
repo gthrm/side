@@ -37,5 +37,13 @@
   "keywords": [
     "phaser3",
     "game"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gthrm/side.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gthrm/side/issues"
+  },
+  "homepage": "https://github.com/gthrm/side#readme"
 }
