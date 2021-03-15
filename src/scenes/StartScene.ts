@@ -22,6 +22,7 @@ export class StartScene extends Phaser.Scene {
 
   public create() {
     console.log('create')
+    this.createBackground()
   }
 
   // public update() {

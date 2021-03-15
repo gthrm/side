@@ -32,7 +32,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
-    publicPath: '/cards-memory-game/',
+    publicPath: '/side/',
   },
   plugins: [
     new HtmlWebpackPlugin({
