@@ -1,5 +1,7 @@
 import * as Phaser from 'phaser'
 import { StartScene } from './scenes/StartScene'
+import { BootScene } from './scenes/BootScene'
+import { PreloadScene } from './scenes/PreloadScene'
 
 export const gameConfig: Phaser.Types.Core.GameConfig = {
   title: 'Sample',
@@ -20,7 +22,7 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
 
   parent: 'game',
   backgroundColor: '#000000',
-  scene: [StartScene],
+  scene: [BootScene, PreloadScene, StartScene],
 }
 
 export const game = new Phaser.Game(gameConfig)

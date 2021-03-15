@@ -2,3 +2,4 @@
 
 - repository info added
 - background added
+- StartScene added

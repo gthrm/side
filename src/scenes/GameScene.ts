@@ -3,10 +3,10 @@ import * as Phaser from 'phaser'
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
   visible: false,
-  key: 'StartScene',
+  key: 'GameScene',
 }
 
-export class StartScene extends Phaser.Scene {
+export class GameScene extends Phaser.Scene {
   constructor() {
     super(sceneConfig)
   }
@@ -15,14 +15,9 @@ export class StartScene extends Phaser.Scene {
     this.add.sprite(0, 0, 'background').setOrigin(0)
   }
 
-  createText() {
-    this.add.text(0, 0, 'Start').setOrigin(0.5, 0.5)
-  }
-
   public create() {
     console.log('create')
     this.createBackground()
-    this.createText()
   }
 
   // public update() {
