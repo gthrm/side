@@ -16,13 +16,23 @@ export class StartScene extends Phaser.Scene {
   }
 
   createText() {
-    this.add.text(0, 0, 'Start').setOrigin(0.5, 0.5)
+    this.add.text(this.game.config.width as number / 2, this.game.config.height as number - 200, 'Tap to Start', {
+      fontSize: '40px',
+      color: '#fff',
+      backgroundColor: 'rgba(1,1,1,.3)',
+      padding: { x: 10, y: 5 },
+    }).setOrigin(0.5)
+  }
+
+  listenerTapStart() {
+    this.input.on('pointerdown', () => this.scene.start('GameScene'))
   }
 
   public create() {
     console.log('create')
     this.createBackground()
     this.createText()
+    this.listenerTapStart()
   }
 
   // public update() {
