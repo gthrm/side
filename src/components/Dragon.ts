@@ -1,32 +1,27 @@
-import * as Phaser from 'phaser'
 import type { Positions } from '../types'
 import type{ IGameScene } from '../scenes/GameScene'
+import { Enemy } from './Enemy'
 
 const prefix = 'dragon'
 const frame = 'dragon1'
 
-export interface IDragon extends Phaser.GameObjects.Sprite {
-  move: Function
-}
-
-export class Dragon extends Phaser.GameObjects.Sprite {
-  scene!: IGameScene
-
-  velocity!: number
+export class Dragon extends Enemy {
+  shooting!: boolean
 
   constructor(scene: IGameScene, position: Positions) {
-    super(scene, position.x, position.y, prefix, frame)
-    this.scene = scene
+    super(scene, position, prefix, frame)
     this.velocity = 500
-    this.init()
+    this.shooting = false
+    this.setDepth(1)
   }
 
-  init() {
-    this.setOrigin(0.5, 0.5)
-    this.scene.add.existing(this)
-    this.scene.physics.add.existing(this)
-    if ('enable' in this.body) {
-      this.body.enable = true
+  shoot() {
+    if (this.scene.cursors?.space.isDown && !this.shooting) {
+      this.shooting = true
+      this.fires?.createFire()
+    }
+    if (this.scene.cursors?.space.isUp) {
+      this.shooting = false
     }
   }
 
@@ -53,5 +48,15 @@ export class Dragon extends Phaser.GameObjects.Sprite {
         this.body.setVelocityY(this.velocity)
       }
     }
+  }
+
+  reset({ x, y }: {x: number, y: number}) {
+    super.reset({ x, y })
+  }
+
+  public update() {
+    super.update()
+    this.move()
+    this.shoot()
   }
 }

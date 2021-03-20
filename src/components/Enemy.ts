@@ -1,37 +1,88 @@
 import * as Phaser from 'phaser'
 import type { Positions } from '../types'
+import type { IGameScene } from '../scenes/GameScene'
+import { ActiveSprite, IActiveSpriteData } from './ActiveSprite'
+import { Fires } from './Fires'
 
-const prefix = 'enemy'
-const frame = 'enemy1'
+export class Enemy extends ActiveSprite {
+  scene!: IGameScene;
 
-export interface IEnemy extends Phaser.GameObjects.Sprite {
-  move: Function
-}
+  velocity!: number;
 
-export class Enemy extends Phaser.GameObjects.Sprite {
-  scene!: Phaser.Scene
+  fires!: Fires | null
 
-  velocity!: number
+  shootTimer!: Phaser.Time.TimerEvent
 
-  constructor(scene: Phaser.Scene, position: Positions) {
-    super(scene, position.x, position.y, prefix, frame)
+  constructor(
+    scene: Phaser.Scene,
+    position: Positions,
+    texture: string,
+    frame: string,
+  ) {
+    super({
+      scene, x: position.x, y: position.y, texture, frame,
+    } as IActiveSpriteData)
     this.scene = scene
     this.velocity = -300
+    this.fires = null
     this.init()
+    this.shootTimer = scene.time.addEvent({
+      delay: 500,
+      loop: true,
+      callback: this.shoot,
+      callbackScope: this,
+    })
+  }
+
+  static getInitialParams(scene: Phaser.Scene) {
+    const x = Number(scene.game.config.width) + 150
+    const y = Phaser.Math.Between(100, Number(scene.game.config.height) - 100)
+    const frameId = Phaser.Math.Between(1, 4)
+    return { x, y, frameId }
+  }
+
+  static generate(scene: Phaser.Scene) {
+    const { x, y, frameId } = this.getInitialParams(scene)
+    const texture = 'enemy'
+    const frame = `enemy${frameId}`
+    return new Enemy(
+      scene,
+      {
+        x,
+        y,
+      },
+      texture,
+      frame,
+    )
+  }
+
+  shoot() {
+    this.fires?.createFire('Bullet')
   }
 
   init() {
-    this.setOrigin(0.5, 0.5)
-    this.scene.add.existing(this)
-    this.scene.physics.add.existing(this)
-    if ('enable' in this.body) {
-      this.body.enable = true
-    }
+    super.init()
+    this.fires = new Fires(this.scene, this)
   }
 
-  move() {
-    if ('setVelocity' in this.body) {
-      this.body.setVelocityX(this.velocity)
+  isDead() {
+    return this.active && this.x < -this.width
+  }
+
+  reset({ x, y }: {x: number, y: number}) {
+    super.reset({ x, y })
+    this.shootTimer = this.scene.time.addEvent({
+      delay: 500,
+      loop: true,
+      callback: this.shoot,
+      callbackScope: this,
+    })
+  }
+
+  update() {
+    super.update()
+    if (this.x < -this.width) {
+      this.shootTimer.remove()
     }
   }
 }

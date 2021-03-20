@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
-import { Dragon, IDragon } from '../components/Dragon'
-import { Enemy, IEnemy } from '../components/Enemy'
+import { Dragon } from '../components/Dragon'
+import { Enemies } from '../components/Enemies'
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -9,7 +9,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 }
 
 export interface IGameScene extends Phaser.Scene {
-  cursors: Phaser.Types.Input.Keyboard.CursorKeys | null
+  cursors?: Phaser.Types.Input.Keyboard.CursorKeys | null
 }
 
 export class GameScene extends Phaser.Scene {
@@ -17,16 +17,16 @@ export class GameScene extends Phaser.Scene {
 
   background!: Phaser.GameObjects.TileSprite | null;
 
-  player!: IDragon | null;
+  player!: Dragon | null;
 
-  enemy!: IEnemy | null;
+  enemies!: Enemies | null
 
   constructor() {
     super(sceneConfig)
     this.cursors = null
     this.background = null
     this.player = null
-    this.enemy = null
+    this.enemies = null
   }
 
   initCursors() {
@@ -52,11 +52,8 @@ export class GameScene extends Phaser.Scene {
     })
   }
 
-  createEnemy() {
-    this.enemy = new Enemy(this, {
-      x: Number(this.game.config.width) - 150,
-      y: Number(this.game.config.height) / 2,
-    })
+  createEnemies() {
+    this.enemies = new Enemies(this)
   }
 
   moveBackground() {
@@ -72,12 +69,10 @@ export class GameScene extends Phaser.Scene {
   public create() {
     this.createBackground()
     this.createPlayer()
-    this.createEnemy()
+    this.createEnemies()
   }
 
   public update() {
-    this.player?.move()
-    this.enemy?.move()
     this.moveBackground()
   }
 }
