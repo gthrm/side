@@ -9,7 +9,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 }
 
 export interface IGameScene extends Phaser.Scene {
-  cursors?: Phaser.Types.Input.Keyboard.CursorKeys | null
+  cursors?: Phaser.Types.Input.Keyboard.CursorKeys | null;
 }
 
 export class GameScene extends Phaser.Scene {
@@ -19,7 +19,7 @@ export class GameScene extends Phaser.Scene {
 
   player!: Dragon | null;
 
-  enemies!: Enemies | null
+  enemies!: Enemies | null;
 
   constructor() {
     super(sceneConfig)
@@ -62,6 +62,26 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  onOverlap(
+    source: any,
+    target: any,
+  ) {
+    source.setAlive(false)
+    target.setAlive(false)
+  }
+
+  addOverlap() {
+    if (this.player?.fires && this.enemies) {
+      this.physics.add.overlap(
+        this.player?.fires,
+        this.enemies,
+        this.onOverlap,
+        undefined,
+        this,
+      )
+    }
+  }
+
   public init() {
     this.initCursors()
   }
@@ -70,6 +90,7 @@ export class GameScene extends Phaser.Scene {
     this.createBackground()
     this.createPlayer()
     this.createEnemies()
+    this.addOverlap()
   }
 
   public update() {

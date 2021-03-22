@@ -19,6 +19,8 @@ export class ActiveSprite extends Phaser.GameObjects.Sprite {
 
     player!: Dragon | Enemy | undefined
 
+    shootTimer!: Phaser.Time.TimerEvent
+
     constructor(data: IActiveSpriteData) {
       super(data.scene, data.x, data.y, data.texture, data.frame)
       this.scene = data.scene
@@ -48,6 +50,9 @@ export class ActiveSprite extends Phaser.GameObjects.Sprite {
       this.setActive(value)
       if (this.body && 'enable' in this.body) {
         this.body.enable = value
+      }
+      if (this.shootTimer) {
+        this.shootTimer.remove()
       }
     }
 

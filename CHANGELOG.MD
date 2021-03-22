@@ -1,3 +1,7 @@
+# 22.03.2021 - 1.0.0
+
+- ability to destroy bots added
+
 # 20.03.2021 - 1.0.0
 
 - players added

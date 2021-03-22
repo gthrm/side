@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser'
 import { Enemy } from './Enemy'
 
-const MAX_ENEMY_COUNT = 10
+const MAX_ENEMY_COUNT = 20
 
 export interface IEnemies extends Phaser.Physics.Arcade.Group {
   createEnemy: Function;
