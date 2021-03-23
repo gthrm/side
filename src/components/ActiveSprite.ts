@@ -54,6 +54,9 @@ export class ActiveSprite extends Phaser.GameObjects.Sprite {
       if (this.shootTimer) {
         this.shootTimer.remove()
       }
+      if (!value) {
+        this.emit('killed')
+      }
     }
 
     isDead() {

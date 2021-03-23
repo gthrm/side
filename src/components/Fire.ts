@@ -7,7 +7,6 @@ export class Fire extends ActiveSprite {
     super(data)
     this.scene = data.scene
     this.velocity = data.velocity
-    this.player = data.player
   }
 
   static getInitialParams(scene: Phaser.Scene, player: Dragon) {

@@ -21,12 +21,15 @@ export class GameScene extends Phaser.Scene {
 
   enemies!: Enemies | null;
 
+  gameIsReset!: Boolean
+
   constructor() {
     super(sceneConfig)
     this.cursors = null
     this.background = null
     this.player = null
     this.enemies = null
+    this.gameIsReset = false
   }
 
   initCursors() {
@@ -80,10 +83,55 @@ export class GameScene extends Phaser.Scene {
         this,
       )
     }
+    if (this.enemies?.fires && this.player) {
+      this.physics.add.overlap(
+        this.enemies?.fires,
+        this.player,
+        this.onOverlap,
+        undefined,
+        this,
+      )
+    }
+    if (this.enemies && this.player) {
+      this.physics.add.overlap(
+        this.enemies,
+        this.player,
+        this.onOverlap,
+        undefined,
+        this,
+      )
+    }
+
+    if (this.enemies?.fires && this.player?.fires) {
+      this.physics.add.overlap(
+        this.enemies?.fires,
+        this.player?.fires,
+        this.onOverlap,
+        undefined,
+        this,
+      )
+    }
+  }
+
+  handleAlive() {
+    this.player?.once('killed', this.resetGame, this)
+
+    if (this.enemies && this.enemies.getLength() > 0 && this.enemies.countActive() === 0) {
+      this.resetGame()
+    }
+  }
+
+  resetGame() {
+    if (!this.gameIsReset) {
+      this.gameIsReset = true
+      this.registry.destroy()
+      this.scene.start('StartScene')
+    }
   }
 
   public init() {
     this.initCursors()
+    this.gameIsReset = false
   }
 
   public create() {
@@ -95,5 +143,6 @@ export class GameScene extends Phaser.Scene {
 
   public update() {
     this.moveBackground()
+    this.handleAlive()
   }
 }

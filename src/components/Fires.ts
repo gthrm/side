@@ -15,21 +15,20 @@ export class Fires extends Phaser.Physics.Arcade.Group {
 
   player!: Dragon | Enemy
 
-  constructor(scene: Phaser.Scene, player: Dragon | Enemy) {
+  constructor(scene: Phaser.Scene) {
     super(scene.physics.world, scene)
     this.scene = scene
-    this.player = player
     this.count = 0
   }
 
-  createFire(type?: 'Bullet' | 'Fire') {
+  createFire(player: Dragon | Enemy, type?: 'Bullet' | 'Fire') {
     const fireObj = type === 'Bullet' ? Bullet : Fire
     let fire: Fire = this.getFirstDead()
     if (!fire) {
-      fire = fireObj.generate(this.scene, this.player)
+      fire = fireObj.generate(this.scene, player)
       this.add(fire)
     } else {
-      fire.reset({ x: this.player.x, y: this.player.y })
+      fire.reset({ x: player.x, y: player.y })
     }
     fire.move()
   }

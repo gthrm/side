@@ -9,7 +9,7 @@ export class Enemy extends ActiveSprite {
 
   velocity!: number;
 
-  fires!: Fires | null
+  fires!: Fires | undefined
 
   shootTimer!: Phaser.Time.TimerEvent
 
@@ -18,19 +18,23 @@ export class Enemy extends ActiveSprite {
     position: Positions,
     texture: string,
     frame: string,
+    fires?: Fires,
   ) {
     super({
       scene, x: position.x, y: position.y, texture, frame,
     } as IActiveSpriteData)
     this.scene = scene
     this.velocity = -300
-    this.fires = null
+    this.fires = fires
     this.init()
-    this.shootTimer = scene.time.addEvent({
-      delay: 500,
+    this.shootTimer = Enemy.getShootTimer(scene, this.shoot.bind(this))
+  }
+
+  static getShootTimer(scene: Phaser.Scene, callback: Function) {
+    return scene.time.addEvent({
+      delay: 1500,
       loop: true,
-      callback: this.shoot,
-      callbackScope: this,
+      callback,
     })
   }
 
@@ -41,7 +45,7 @@ export class Enemy extends ActiveSprite {
     return { x, y, frameId }
   }
 
-  static generate(scene: Phaser.Scene) {
+  static generate(scene: Phaser.Scene, fires: Fires) {
     const { x, y, frameId } = this.getInitialParams(scene)
     const texture = 'enemy'
     const frame = `enemy${frameId}`
@@ -53,16 +57,12 @@ export class Enemy extends ActiveSprite {
       },
       texture,
       frame,
+      fires,
     )
   }
 
   shoot() {
-    this.fires?.createFire('Bullet')
-  }
-
-  init() {
-    super.init()
-    this.fires = new Fires(this.scene, this)
+    this.fires?.createFire(this, 'Bullet')
   }
 
   isDead() {
@@ -71,12 +71,7 @@ export class Enemy extends ActiveSprite {
 
   reset({ x, y }: {x: number, y: number}) {
     super.reset({ x, y })
-    this.shootTimer = this.scene.time.addEvent({
-      delay: 500,
-      loop: true,
-      callback: this.shoot,
-      callbackScope: this,
-    })
+    this.shootTimer = Enemy.getShootTimer(this.scene, this.shoot)
   }
 
   update() {
