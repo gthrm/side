@@ -1,3 +1,4 @@
+import * as Phaser from 'phaser'
 import type { Positions } from '../types'
 import type{ IGameScene } from '../scenes/GameScene'
 import { Enemy } from './Enemy'
@@ -6,15 +7,33 @@ import { Fires } from './Fires'
 const prefix = 'dragon'
 const frame = 'dragon1'
 
+const anims = {
+  FLIGHT: 'FLIGHT',
+}
+
 export class Dragon extends Enemy {
   shooting!: boolean
+
+  frames!: Phaser.Types.Animations.AnimationFrame[] | null
 
   constructor(scene: IGameScene, position: Positions) {
     super(scene, position, prefix, frame)
     this.velocity = 500
     this.shooting = false
     this.fires = new Fires(this.scene)
+    this.frames = this.anims.generateFrameNames(prefix, {
+      prefix,
+      start: 1,
+      end: 6,
+    })
+    if (this.frames) {
+      this.scene.anims.create({
+        key: anims.FLIGHT, frames: this.frames, frameRate: 20, repeat: -1,
+      })
+    }
+
     this.setDepth(1)
+    this.play(anims.FLIGHT)
   }
 
   shoot() {

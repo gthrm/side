@@ -1,3 +1,7 @@
+# 05.04.2021 - 1.0.0
+
+- score number added to start scene
+
 # 23.03.2021 - 1.0.0
 
 - ability to destroy player added
